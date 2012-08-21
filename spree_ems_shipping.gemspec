@@ -17,4 +17,6 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency('spree_core', '>= 0.60.6')
+  s.add_dependency('json')
+  s.add_dependency('unicode')
 end
