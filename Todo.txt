@@ -1,0 +1,2 @@
+Done 1. Добавить strip в метод get_ems_destination при получении order_city и order_region
+Done 2. Добавить обработку ship_address.state_id при получении order_region

@@ -13,6 +13,22 @@ describe "Spree::EmsShipping::ApiWrapper" do
     @wrapper = Spree::EmsShipping::ApiWrapper.new(Spree::EmsShipping::Config[:api_url])
   end
 
+  describe "ApiWrapper::normalize_location_name" do
+    it "returns empty string for nil" do
+      Spree::EmsShipping::ApiWrapper::normalize_location_name(nil).should be_empty
+    end
+    example "non unicode" do
+      name = '  TverSkoy   RegiOn  '
+      normalized_name = 'TVERSKOY REGION'
+      (Spree::EmsShipping::ApiWrapper::normalize_location_name(name) == normalized_name).should be_true
+    end
+    example "unicode example" do
+      name = "    \320\242\320\262\320\265\320\240\321\201\320\232\320\260\321\217    \320\236\320\261\320\273\320\260\320\241\321\202\321\214    " # "    ТвеРсКая    ОблаСть    "
+      normalized_name = "\320\242\320\222\320\225\320\240\320\241\320\232\320\220\320\257 \320\236\320\221\320\233\320\220\320\241\320\242\320\254" # "ТВЕРСКАЯ ОБЛАСТЬ"
+      (Spree::EmsShipping::ApiWrapper::normalize_location_name(name) == normalized_name).should be_true
+    end
+  end
+
   describe "max_weight" do
     it "returns  max_weight" do
       result = @wrapper.max_weight

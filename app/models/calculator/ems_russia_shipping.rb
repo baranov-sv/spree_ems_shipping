@@ -1,5 +1,3 @@
-require 'unicode'
-
 # This is a calculator for shipping calculations in Russia only 
 class Calculator::EmsRussiaShipping < Calculator
 
@@ -63,18 +61,18 @@ class Calculator::EmsRussiaShipping < Calculator
    # Return nil if destination is not found
    def get_ems_destination(order)
     return nil unless order.present?
-    order_city = Unicode::upcase(order.ship_address.city.to_s).gsub(/\s+/,' ')
-    order_region = Unicode::upcase(order.ship_address.state_name.to_s).gsub(/\s+/,' ')
+    order_city = order.ship_address.city
+    order_region = (state = order.ship_address.state) && state.present? ? state.name : order.ship_address.state_name
     # search in cities
     cities = api_wrapper.locations('cities')
     return nil if cities.kind_of?(Hash)
-    if ind = cities.index{|c| Unicode::upcase(c['name']) == order_city}
+    if ind = cities.index{|c| Spree::EmsShipping::ApiWrapper::normalize_location_name(order_city) == c['name']}
       return cities[ind]['value']
     end
     # search in regions
     regions = api_wrapper.locations('regions')
     return nil if regions.kind_of?(Hash)
-    if ind = regions.index {|r| Unicode::upcase(r['name']) == order_region}
+    if ind = regions.index {|r| Spree::EmsShipping::ApiWrapper::normalize_location_name(order_region) == r['name']}
       return regions[ind]['value'] 
     end
     # if we are here it means destination is not found

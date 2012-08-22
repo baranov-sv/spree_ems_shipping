@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'json'
+require 'unicode'
 
 module Spree
  module EmsShipping
@@ -9,6 +10,13 @@ module Spree
      # Class to wrap access to EMS Russian Post api.
     class ApiWrapper
       attr_reader :api_url
+
+      class << self
+        # Normalize name to format EMS API locations["name"]
+        def normalize_location_name(name)
+          Unicode::upcase(name.to_s).gsub(/\s+/,' ').strip
+        end
+      end
 
       def initialize(api_url)
         super()
