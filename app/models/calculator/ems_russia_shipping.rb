@@ -16,7 +16,15 @@ class Calculator::EmsRussiaShipping < Calculator
 
   attr_reader :api_wrapper, :rate
 
-  def compute(order)
+  def compute(object)
+    if object.is_a?(Array)
+      order = object.first.order
+    elsif object.is_a?(Shipment)
+      order = object.order
+    else
+      order = object
+    end
+    self.available?(order)
     return self.rate
   end
 
